@@ -1,0 +1,29 @@
+<!-- fragments/sideMenu.html -->
+<div th:fragment="sideMenu" class="d-flex flex-column p-3 bg-light border-right" style="width: 250px;">
+    <h4 class="text-center">eBank</h4>
+    <hr>
+    <ul class="nav nav-tabs flex-column mb-auto">
+        <li class="nav-item">
+            <a th:href="@{/customers}" class="nav-link" th:classappend="${page == 'customers'} ? 'active'">
+                <i class="fas fa-users"></i> Customers
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/accounts}" class="nav-link" th:classappend="${page == 'accounts'} ? 'active'">
+                <i class="fas fa-wallet"></i> Accounts
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/transfers}" class="nav-link" th:classappend="${page == 'transfers'} ? 'active'">
+                <i class="fas fa-exchange-alt"></i> Transfers
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/transactions}" class="nav-link" th:classappend="${page == 'transactions'} ? 'active'">
+                <i class="fas fa-file-invoice"></i> Transactions
+            </a>
+        </li>
+    </ul>
+</div>
+
+

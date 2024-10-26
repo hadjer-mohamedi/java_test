@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Account</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Account</h1>
+
+        <form th:action="@{/accounts/add}" method="post" class="add-account-form">
+            <input type="text" placeholder="Account Number" name="accountNumber" required />
+            <input type="number" placeholder="Balance" name="balance" required />
+            
+            <label for="customerId">Select Customer:</label>
+            <select name="customerId" required>
+                <option value="">Select Customer</option>
+                <option th:each="customer : ${customers}" th:value="${customer.id}" th:text="${customer.name}"></option>
+            </select>
+
+            <button type="submit" class="btn btn-success">Add Account</button>
+        </form>
+
+        <!--a href="/accounts" class="btn btn-secondary">Back to Accounts</a-->
+    </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Transaction</title>
+</head>
+<body>
+    <div class="container">
+        <form id="transactionForm" th:action="@{/transactions/add}" method="post">
+            <div class="mb-3">
+                <label for="transactionType" class="form-label">Transaction Type</label>
+                <select id="transactionType" name="transactionType" class="form-control" required>
+                    <option value="DEPOSIT">Deposit</option>
+                    <option value="WITHDRAWAL">Withdrawal</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="amount" class="form-label">Amount</label>
+                <input type="number" step="0.01" class="form-control" id="amount" name="amount" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="transactionDate" class="form-label">Transaction Date</label>
+                <input type="datetime-local" class="form-control" id="transactionDate" name="transactionDate" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="fromAccountId" class="form-label">From Account</label>
+                <select id="fromAccountId" name="fromAccountId" class="form-control" required>
+                    <option value="">Select Account</option>
+                    <option th:each="account : ${accounts}" th:value="${account.id}" 
+                        th:text="${account.accountNumber} + ' : ' + ${account.customer.name}"></option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Transaction</button>
+        </form>
+    </div>
+</body>
+</html>

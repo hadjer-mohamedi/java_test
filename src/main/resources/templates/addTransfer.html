@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Transfer</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Notification area -->
+        <div id="notification" class="alert alert-danger" style="display:none;"></div>
+
+        <form id="transferForm" th:action="@{/transfers/add}" method="post" class="add-transfer-form">
+            <label for="fromAccountId">From Account:</label>
+            <select id="fromAccountId" name="fromAccountId" class="form-control" required>
+                <option value="">Select From Account</option>
+                <option th:each="account : ${accounts}" th:value="${account.id}" th:text="${account.accountNumber} + ' : ' + ${account.customer.name}" 
+                    th:data-balance="${account.balance}"></option>
+            </select>
+
+            <label for="toAccountId">To Account:</label>
+            <select id="toAccountId" name="toAccountId" class="form-control" required>
+                <option value="">Select To Account</option>
+                <option th:each="account : ${accounts}" th:value="${account.id}" th:text="${account.accountNumber} + ' : ' + ${account.customer.name}"></option>
+            </select>
+
+            <label for="amount">Amount:</label>
+            <input type="number" class="form-control" id="amount" name="amount" required />
+
+            <button type="submit" class="btn btn-primary mt-3">Add Transfer</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('transferForm').addEventListener('submit', function(event) {
+            var fromAccountId = document.getElementById('fromAccountId').value;
+            var toAccountId = document.getElementById('toAccountId').value;
+            var amount = parseFloat(document.getElementById('amount').value);
+            var fromAccountBalance = parseFloat(document.querySelector(`#fromAccountId option[value="${fromAccountId}"]`).dataset.balance);
+
+            // Notification element
+            var notification = document.getElementById('notification');
+            notification.style.display = 'none'; // Hide notification initially
+
+            // Reset previous errors
+            var errors = [];
+
+            // Check if From Account and To Account are the same
+            if (fromAccountId === toAccountId) {
+                errors.push("The From Account and To Account cannot be the same.");
+            }
+
+            // Check if balance is sufficient for the transfer
+            if (amount > fromAccountBalance) {
+                errors.push("Insufficient balance to complete the transfer.");
+            }
+
+            // If there are errors, prevent form submission and show the notification
+            if (errors.length > 0) {
+                event.preventDefault();
+                notification.innerHTML = errors.join('<br>'); // Show all errors
+                notification.style.display = 'block'; // Display the notification
+            }
+        });
+    </script>
+</body>
+</html>

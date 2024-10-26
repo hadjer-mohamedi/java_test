@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfers List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex align-items-center">
+            <button onclick="window.location.href='/'" class="btn btn-link ms-2" title="Go to Home" style="font-size: 1.5rem; color: #000; text-decoration: none;">
+                <i class="fas fa-home"></i>
+            </button>
+            <h1 >Transfers List</h1>
+        </div>
+
+        <!-- Filter Form -->
+        <form th:action="@{/transfers}" method="get" class="mb-4 p-3 border rounded bg-light">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label for="fromAccount" class="form-label">From Account</label>
+                    <select class="form-select" name="fromAccount" id="fromAccount">
+                        <option value="">-- Select From Account --</option>
+                        <option th:each="account : ${accounts}" th:value="${account.accountNumber}"
+                                th:text="${account.accountNumber} + ' : ' + ${account.customer.name}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="toAccount" class="form-label">To Account</label>
+                    <select class="form-select" name="toAccount" id="toAccount">
+                        <option value="">-- Select To Account --</option>
+                        <option th:each="account : ${accounts}" th:value="${account.accountNumber}"
+                                th:text="${account.accountNumber} + ' : ' + ${account.customer.name}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="minAmount" class="form-label">Min Amount</label>
+                    <input type="number" step="0.01" class="form-control" name="minAmount" placeholder="Min Amount">
+                </div>
+                <div class="col-md-2">
+                    <label for="maxAmount" class="form-label">Max Amount</label>
+                    <input type="number" step="0.01" class="form-control" name="maxAmount" placeholder="Max Amount">
+                </div>
+            </div>
+            <div class="row g-3 mt-2">
+                <div class="col-md-3">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input type="datetime-local" class="form-control" name="startDate">
+                </div>
+                <div class="col-md-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="datetime-local" class="form-control" name="endDate">
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <!-- Add Transfer Button to open modal -->
+                    <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#addTransferModal">Add Transfer</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Transfer List -->
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>From Account</th>
+                    <th>To Account</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="transfer : ${transfers}">
+                    <td th:text="${transfer.fromAccount.accountNumber}+ ' : ' +${transfer.fromAccount.customer.name}"></td>
+                    <td th:text="${transfer.toAccount.accountNumber}+ ' : ' +${transfer.toAccount.customer.name}"></td>
+                    <td th:text="${transfer.amount}"></td>
+                    <td th:text="${#dates.format(transfer.transferDate, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td>
+                        <a th:href="@{/transfers/delete/{id}(id=${transfer.id})}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Transfer Modal -->
+    <div class="modal fade" id="addTransferModal" tabindex="-1" aria-labelledby="addTransferModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTransferModalLabel">Add New Transfer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="addTransferFormContainer">
+                    <!-- Form content will be loaded dynamically here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Fetch form content when Add Transfer modal is shown
+        document.getElementById('addTransferModal').addEventListener('show.bs.modal', function (event) {
+            fetch('/transfers/add')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('addTransferFormContainer').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading form:', error));
+        });
+    </script>
+</body>
+</html>
